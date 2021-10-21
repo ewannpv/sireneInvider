@@ -12,5 +12,4 @@ export const createNewFile = (file, path) => {
   });
 }
 
-
-console.log(numFilesinDir(csvSampleDir));
+// console.log(numFilesinDir(csvSampleDir));

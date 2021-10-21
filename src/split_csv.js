@@ -46,4 +46,4 @@ const closeLineReader = () => {
     createNewFile();
 }
 
-splitCSV();
+// splitCSV();
