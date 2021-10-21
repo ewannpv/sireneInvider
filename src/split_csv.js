@@ -1,6 +1,6 @@
 import readline from 'readline';
 import fs from 'fs';
-import { csvFilePath, maxFileNumber, maxLinesPerFiles } from './constants/constants.js';
+import { csvFilePath, maxFileNumber, maxLinesPerFiles, csvPrefix } from './constants/constants.js';
 
 console.log(csvFilePath);
 const lineNumber = 0;
@@ -18,7 +18,7 @@ const createNewFile = () => {
     if (fileNumber++ >= maxFileNumber)
         return lineReader.close();
 
-    fs.writeFile(`src/data/sample/sample-${fileNumber}.csv`, currentFile, (err) => {
+    fs.writeFile(`${csvPrefix}${fileNumber}.csv`, currentFile, (err) => {
         if (err) throw err;
         console.log('File is created successfully.');
     });
