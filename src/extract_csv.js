@@ -82,6 +82,6 @@ const createNewFile = (file) => {
   });
 }
 
-const newHeader = generateNewHeader();
-const headerIndex = await generateNewHeaderIndex(newHeader);
-createNewFile(await generateNewCSV('src/data/sample/sample-2.csv', newHeader, headerIndex));
+// const newHeader = generateNewHeader();
+// const headerIndex = await generateNewHeaderIndex(newHeader);
+// createNewFile(await generateNewCSV('src/data/sample/sample-2.csv', newHeader, headerIndex));
