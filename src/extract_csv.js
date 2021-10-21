@@ -2,7 +2,7 @@ import fs from 'fs';
 import readline from 'readline';
 import { csvInformationsNeeded, csvHeaderFilePath } from './constants/constants.js'
 
-const generateNewHeader = () => {
+export const generateNewHeader = () => {
   let csvHeader = "";
   let separator = ',';
   let index = 0
@@ -14,7 +14,7 @@ const generateNewHeader = () => {
   return csvHeader;
 }
 
-const generateNewHeaderIndex = async (newHeader) => {
+export const generateNewHeaderIndex = async (newHeader) => {
   const headerNeededList = newHeader.split(',');
   const headerIndex = [];
   const lineReader = readline.createInterface({
@@ -63,14 +63,14 @@ const generateNewDataLine = (line, headerLen, headerIndex) => {
   for (index; index < headerLen - 2; index++) {
     const element = elements[headerIndex[index]];
 
-    if (element != null)
+    if (element != null && element.length > 0)
       newLine += element + ',';
     else {
-      return;
+      return '';
     }
   }
   const element = headerIndex[index];
-  if (!element) return '';
+  if (element == null || element.length == 0) return '';
   return newLine += element + '\n';
 }
 
@@ -82,6 +82,6 @@ const createNewFile = (file) => {
   });
 }
 
-// const newHeader = generateNewHeader();
-// const headerIndex = await generateNewHeaderIndex(newHeader);
-// createNewFile(await generateNewCSV('src/data/sample/sample-2.csv', newHeader, headerIndex));
+const newHeader = generateNewHeader();
+const headerIndex = await generateNewHeaderIndex(newHeader);
+createNewFile(await generateNewCSV('src/data/sample/sample-2.csv', newHeader, headerIndex));
