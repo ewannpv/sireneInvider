@@ -1,24 +1,24 @@
 import readline from 'readline';
 import fs from 'fs';
+import { csvFilePath, maxFileNumber, maxLinesPerFiles } from './constants/constants.js';
 
-const fileName = "./data/StockEtablissement_utf8.csv";
+console.log(csvFilePath);
 const lineNumber = 0;
 const lineReader = readline.createInterface({
-    input: fs.createReadStream(fileName),
+    input: fs.createReadStream(csvFilePath),
     output: process.stderr,
     console: false
 });
 
 let fileNumber = 0;
 let currentFile = "";
-const maxFileNumber = 10;
 let currentLine = 0;
 
 const createNewFile = () => {
     if (fileNumber++ >= maxFileNumber)
         return lineReader.close();
 
-    fs.writeFile(`./data/sample/sample-${fileNumber}`, currentFile, (err) => {
+    fs.writeFile(`src/data/sample/sample-${fileNumber}`, currentFile, (err) => {
         if (err) throw err;
         console.log('File is created successfully.');
     });
@@ -29,7 +29,7 @@ const createNewFile = () => {
 const readCurrentLine = (line) => {
     currentFile += line.toString();
     currentLine++;
-    if (currentLine % 101 == 1)
+    if (currentLine % maxLinesPerFiles == 1)
         createNewFile();
 }
 
