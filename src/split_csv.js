@@ -1,12 +1,17 @@
 import fs from 'fs';
 import readline from 'readline';
-import { csvFilePath, maxFileNumber, maxLinesPerFiles, csvPrefix } from './constants/constants.js';
+import { csvFilePath, maxFileNumber, maxLinesPerFiles, csvSamplePrefix, csvSampleDir } from './constants/constants.js';
 
 let fileNumber = 0;
 let currentFile = "";
 let currentLine = 0;
 let lineReader;
 export const splitCSV = () => {
+    if (!fs.existsSync(csvSampleDir)) {
+        fs.mkdirSync(csvSampleDir);
+    }
+
+
     lineReader = readline.createInterface({
         input: fs.createReadStream(csvFilePath),
         output: process.stdout,
@@ -22,7 +27,7 @@ const createNewFile = () => {
     if (fileNumber++ >= maxFileNumber)
         return lineReader.close();
 
-    fs.writeFile(`${csvPrefix}${fileNumber}.csv`, currentFile, (err) => {
+    fs.writeFile(`${csvSamplePrefix}${fileNumber}.csv`, currentFile, (err) => {
         if (err) throw err;
         console.log('File is created successfully.');
     });
@@ -41,4 +46,4 @@ const closeLineReader = () => {
     createNewFile();
 }
 
-// splitCSV();
+splitCSV();

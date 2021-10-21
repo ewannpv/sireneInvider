@@ -74,14 +74,6 @@ const generateNewDataLine = (line, headerLen, headerIndex) => {
   return newLine += element + '\n';
 }
 
-
-const createNewFile = (file) => {
-  fs.writeFile(`edited.csv`, file, (err) => {
-    if (err) throw err;
-    console.log('File is created successfully.');
-  });
-}
-
 // const newHeader = generateNewHeader();
 // const headerIndex = await generateNewHeaderIndex(newHeader);
-// createNewFile(await generateNewCSV('src/data/sample/sample-2.csv', newHeader, headerIndex));
+// createNewFile(await generateNewCSV('src/data/sample/sample-2.csv', newHeader, headerIndex), data/filtred.csv);

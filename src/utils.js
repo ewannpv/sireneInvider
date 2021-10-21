@@ -1,21 +1,17 @@
-const fs = require("fs")
+import fs from 'fs';
 
+export const numFilesinDir = (dirPath) => {
 
-export const FilesNumber = () => {
+  filenames = fs.readdirSync(dirPath);
+  return filenames.lenght - 1;
 
-  const getAllDirFiles = function (dirPath, arrayOfFiles) {
-    files = fs.readdirSync(dirPath)
-
-    arrayOfFiles = arrayOfFiles || []
-
-    files.forEach(function (file) {
-      if (fs.statSync(dirPath + "/" + file).isDirectory()) {
-        arrayOfFiles = getAllDirFiles(dirPath + "/" + file, arrayOfFiles)
-      } else {
-        arrayOfFiles.push(file)
-      }
-    })
-
-    return arrayOfFiles
-  }
 }
+
+export const createNewFile = (file, path) => {
+  fs.writeFile(path, file, (err) => {
+    if (err) throw err;
+    console.log('File is created successfully.');
+  });
+}
+
+numFilesinDir('./data/sample');
