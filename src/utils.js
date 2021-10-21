@@ -1,8 +1,17 @@
 import fs from 'fs';
-import { csvSampleDir } from './constants/constants.js';
 
-export const numFilesinDir = (dirPath) => {
+export const numOfFiles = (dirPath) => {
   return fs.readdirSync(dirPath).length;
+}
+
+export const filesList = (dirPath) => {
+  return fs.readdirSync(dirPath);
+}
+
+export const checkDir = (dirPath) => {
+  if (!fs.existsSync(dirPath)) {
+    fs.mkdirSync(dirPath);
+  }
 }
 
 export const createNewFile = (file, path) => {
@@ -12,4 +21,4 @@ export const createNewFile = (file, path) => {
   });
 }
 
-// console.log(numFilesinDir(csvSampleDir));
+// console.log(numFilesinDir(src/data/sample/));
