@@ -18,7 +18,7 @@ const createNewFile = () => {
     if (fileNumber++ >= maxFileNumber)
         return lineReader.close();
 
-    fs.writeFile(`src/data/sample/sample-${fileNumber}`, currentFile, (err) => {
+    fs.writeFile(`src/data/sample/sample-${fileNumber}.csv`, currentFile, (err) => {
         if (err) throw err;
         console.log('File is created successfully.');
     });
