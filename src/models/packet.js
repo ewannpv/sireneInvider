@@ -1,8 +1,7 @@
-const packet = (index, data) => ({
-  id: index,
+const packet = (id, data) => ({
   type: 'process:msg',
-  data,
-  topic: true,
+  data: { data: data },
+  id: id,
 });
 
 export default packet;

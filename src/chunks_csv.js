@@ -1,15 +1,18 @@
 import fs from 'fs';
 import pm2 from 'pm2';
-import { csvSampleDir, chunkSize, csvFilePath } from './constants/constants';
-import packet from './models/packet';
-import { createNewFile } from './utils';
+import { csvSampleDir, chunkSize, csvFilePath } from './constants/constants.js';
+import packet from './models/packet.js';
+import { createNewFile } from './utils.js';
 
 let currentWorker = 1;
 let currentFile = 0;
 
 const sendDataToWorker = (data) => {
   if (currentWorker >= process.env.instances) currentWorker = 1;
-  pm2.sendDataToProcessId(packet(currentWorker, data));
+  pm2.sendDataToProcessId(packet(currentWorker, data), function (err, res) {
+    console.log(err);
+    console.log('message sent');
+  });
   currentWorker += 1;
 };
 

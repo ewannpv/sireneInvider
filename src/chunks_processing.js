@@ -1,8 +1,9 @@
-import { csvSampleDir } from './constants/constants';
-import csvFormat from './models/csvFormat';
-import { createNewFile } from './utils';
+import { csvSampleDir } from './constants/constants.js';
+import csvFormat from './models/csvFormat.js';
+import { createNewFile } from './utils.js';
 
 const parseChunk = (data) => {
+  console.log('check parseChunk');
   const file = '';
   const lines = data.toString().split('\n');
   for (let index = 0; index < lines.length; index += 1) {

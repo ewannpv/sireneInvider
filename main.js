@@ -1,6 +1,7 @@
-import { csvSampleDir } from './src/constants/constants';
-import { createNewFile, checkDir } from './src/utils';
-import splitFile from './src/chunks_csv';
+import { csvSampleDir } from './src/constants/constants.js';
+import { checkDir, createNewFile } from './src/utils.js';
+import splitFile from './src/chunks_csv.js';
+import parseChunk from './src/chunks_processing.js';
 
 const generateEditedSamples = async () => {
   checkDir(csvSampleDir);
@@ -8,12 +9,13 @@ const generateEditedSamples = async () => {
 };
 
 const handlePacket = (packet) => {
-  checkDir(csvSampleDir);
-  createNewFile('', csvSampleDir + packet.data.index);
+  console.log('handlePacket');
+  parseChunk(packet.data.data);
 };
 
 if (process.env.pm_id === '0') {
   generateEditedSamples();
 } else {
+  console.log('Waiting for message');
   process.on('message', (packet) => handlePacket(packet));
 }

@@ -10,12 +10,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "eslint-config-airbnb": "^18.2.1",
     "pm2": "^5.1.2"
   },
   "devDependencies": {
-    "@types/node": "^16.11.1",
-    "eslint": "^8.1.0",
-    "eslint-plugin-import": "^2.25.2"
+    "@types/node": "^16.11.1"
   }
 }
