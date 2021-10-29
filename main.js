@@ -1,38 +1,19 @@
-import {
-  generateNewHeader,
-  generateNewCSV,
-  generateNewHeaderIndex,
-} from "./src/extract_csv.js";
-import { csvSampleDir, csvEditedDir } from "./src/constants/constants.js";
-import { createNewFile, checkDir } from "./src/utils.js";
-import { splitFile } from "./src/chunks_csv.js";
-import fs from "fs";
-
-let _newHeader;
-let _headerIndex;
-
-const getHelpers = async () => {
-  _newHeader = await generateNewHeader();
-  _headerIndex = await generateNewHeaderIndex(_newHeader);
-};
-
-const samplesWatcher = async () => {
-  const watcher = fs.watch(csvSampleDir, async (eventType, filename) => {
-    const newFile = await generateNewCSV(
-      csvSampleDir + filename,
-      _newHeader,
-      _headerIndex,
-    );
-    createNewFile(newFile, csvEditedDir + filename);
-  });
-};
+import { csvSampleDir } from './src/constants/constants';
+import { createNewFile, checkDir } from './src/utils';
+import { splitFile } from './src/chunks_csv';
 
 const generateEditedSamples = async () => {
   checkDir(csvSampleDir);
-  checkDir(csvEditedDir);
-  await getHelpers();
-  // samplesWatcher();
-  splitFile();
+  splitFile(true);
 };
 
-generateEditedSamples();
+const handlePacket = (packet) => {
+  checkDir(csvSampleDir);
+  createNewFile('', csvSampleDir + packet.data.index);
+};
+
+if (process.env.pm_id === '0') {
+  generateEditedSamples();
+} else {
+  process.on('message', (packet) => handlePacket(packet));
+}

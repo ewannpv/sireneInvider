@@ -9,8 +9,13 @@
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "eslint-config-airbnb": "^18.2.1",
+    "pm2": "^5.1.2"
+  },
   "devDependencies": {
-    "@types/node": "^16.11.1"
+    "@types/node": "^16.11.1",
+    "eslint": "^8.1.0",
+    "eslint-plugin-import": "^2.25.2"
   }
 }

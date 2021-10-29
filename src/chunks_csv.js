@@ -1,43 +1,47 @@
-import fs from "fs";
-import {
-  csvFilePath,
-  csvSamplePrefix,
-  chunkSize,
-} from "./constants/constants.js";
+import fs from 'fs';
+import pm2 from 'pm2';
+import { csvSampleDir, chunkSize, csvFilePath } from './constants/constants';
+import packet from './models/packet';
+import { createNewFile } from './utils';
 
-let fileNumber = 0;
+let currentWorker = 1;
+let currentFile = 0;
 
-const createFile = (data) => {
-  fs.writeFile(`${csvSamplePrefix}${fileNumber}.csv`, data, (err) => {
-    if (err) throw err;
-    fileNumber++;
-  });
+const sendDataToWorker = (data) => {
+  if (currentWorker >= process.env.instances) currentWorker = 1;
+  pm2.sendDataToProcessId(packet(currentWorker, data));
+  currentWorker += 1;
 };
 
-export const splitFile = () => {
-  fs.open(csvFilePath, "r", function (err, fd) {
+const splitFile = (saveLocaly) => {
+  fs.open(csvFilePath, 'r', (err, fd) => {
     if (err) throw err;
-    let buffer = Buffer.alloc(chunkSize);
-    let tailBuffer = Buffer.from("", "base64");
+    const buffer = Buffer.alloc(chunkSize);
+    let tailBuffer = Buffer.alloc(0);
     function readNextChunk() {
-      fs.read(fd, buffer, 0, chunkSize, null, function (err, nread) {
-        if (err) throw err;
+      fs.read(fd, buffer, 0, chunkSize, null, (err2, nread) => {
+        if (err2) throw err;
 
         if (nread === 0) {
-          // done reading file, do any necessary finalization steps
-
-          fs.close(fd, function (err) {
-            if (err) throw err;
+          fs.close(fd, (err3) => {
+            if (err3) throw err;
           });
           return;
         }
 
-        var data;
+        let data;
         if (nread < chunkSize) data = buffer.slice(0, nread);
         else data = buffer;
-        const sliced_data = data.slice(0, data.lastIndexOf("\n"));
-        createFile(Buffer.concat([tailBuffer, sliced_data]));
-        tailBuffer = Buffer.from(data.slice(data.lastIndexOf("\n"), nread));
+
+        const slicedData = data.slice(0, data.lastIndexOf('\n'));
+        if (saveLocaly) {
+          const filename = `${csvSampleDir}${currentFile}.csv`;
+          createNewFile(Buffer.concat([tailBuffer, slicedData]), filename);
+          currentFile += 1;
+        } else {
+          sendDataToWorker(Buffer.concat([tailBuffer, slicedData]));
+        }
+        tailBuffer = Buffer.from(data.slice(data.lastIndexOf('\n'), nread));
         readNextChunk();
       });
     }
@@ -45,4 +49,4 @@ export const splitFile = () => {
   });
 };
 
-splitFile();
+export default splitFile;
