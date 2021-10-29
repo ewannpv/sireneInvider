@@ -4,12 +4,19 @@ import { createNewFile } from './utils.js';
 
 const parseChunk = (data) => {
   console.log('check parseChunk');
-  const file = '';
-  const lines = data.toString().split('\n');
+  var obj = {
+    data: [],
+  };
+  const lines = Buffer(data).toString().split('\n');
+  lines.shift();
+  console.log('lines ' + lines.length);
   for (let index = 0; index < lines.length; index += 1) {
-    file.push(csvFormat(lines[index].split(',')));
+    obj.data.push(csvFormat(lines[index].split(',')));
   }
-  createNewFile(file, csvSampleDir + Math.random() * (50 - 5) + 5);
+  createNewFile(
+    JSON.stringify(obj),
+    csvSampleDir + Math.random() * (50 - 5) + 5
+  );
 };
 
 export default parseChunk;

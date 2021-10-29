@@ -9,8 +9,8 @@ let currentFile = 0;
 
 const sendDataToWorker = (data) => {
   if (currentWorker >= process.env.instances) currentWorker = 1;
-  pm2.sendDataToProcessId(packet(currentWorker, data), function (err, res) {
-    console.log(err);
+  console.log('sending message..');
+  pm2.sendDataToProcessId(packet(currentWorker, data), (err, res) => {
     console.log('message sent');
   });
   currentWorker += 1;
@@ -21,7 +21,7 @@ const splitFile = (saveLocaly) => {
     if (err) throw err;
     const buffer = Buffer.alloc(chunkSize);
     let tailBuffer = Buffer.alloc(0);
-    function readNextChunk() {
+    const readNextChunk = () => {
       fs.read(fd, buffer, 0, chunkSize, null, (err2, nread) => {
         if (err2) throw err;
 
@@ -36,7 +36,7 @@ const splitFile = (saveLocaly) => {
         if (nread < chunkSize) data = buffer.slice(0, nread);
         else data = buffer;
 
-        const slicedData = data.slice(0, data.lastIndexOf('\n') - 1);
+        const slicedData = data.slice(0, data.lastIndexOf('\n'));
         if (saveLocaly) {
           const filename = `${csvSampleDir}${currentFile}.csv`;
           createNewFile(Buffer.concat([tailBuffer, slicedData]), filename);
@@ -47,7 +47,7 @@ const splitFile = (saveLocaly) => {
         tailBuffer = Buffer.from(data.slice(data.lastIndexOf('\n'), nread));
         readNextChunk();
       });
-    }
+    };
     readNextChunk();
   });
 };
