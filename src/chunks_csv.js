@@ -33,7 +33,7 @@ const splitFile = (saveLocaly) => {
         if (nread < chunkSize) data = buffer.slice(0, nread);
         else data = buffer;
 
-        const slicedData = data.slice(0, data.lastIndexOf('\n'));
+        const slicedData = data.slice(0, data.lastIndexOf('\n') - 1);
         if (saveLocaly) {
           const filename = `${csvSampleDir}${currentFile}.csv`;
           createNewFile(Buffer.concat([tailBuffer, slicedData]), filename);

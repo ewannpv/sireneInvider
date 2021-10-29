@@ -1,10 +1,10 @@
 import { csvSampleDir } from './src/constants/constants';
 import { createNewFile, checkDir } from './src/utils';
-import { splitFile } from './src/chunks_csv';
+import splitFile from './src/chunks_csv';
 
 const generateEditedSamples = async () => {
   checkDir(csvSampleDir);
-  splitFile(true);
+  splitFile(false);
 };
 
 const handlePacket = (packet) => {
