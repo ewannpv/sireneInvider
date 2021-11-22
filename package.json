@@ -5,7 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "pm2:run": "pm2 start process.json",
+    "pm2:stop": "pm2 stop all",
+    "clean": "rm -rf src/data/worker && exit 0",
+    "lint": "eslint"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +17,7 @@
     "pm2": "^5.1.2"
   },
   "devDependencies": {
-    "@types/node": "^16.11.1"
+    "@types/node": "^16.11.1",
+    "eslint": "^8.3.0"
   }
 }

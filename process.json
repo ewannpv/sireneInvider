@@ -3,8 +3,8 @@
     {
       "name": "app1",
       "script": "./main.js",
-      "exec_mode": "cluster",
-      "instances": "5"
+      "instances": 12,
+      "exec_mode": "cluster"
     }
   ]
 }
