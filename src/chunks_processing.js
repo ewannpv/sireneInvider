@@ -1,14 +1,16 @@
 import csvFormat from './models/csvFormat.js';
 import fs from 'fs';
-import { jsonDir } from './constants/constants.js';
-import { createNewFile } from './utils.js';
 
 // Processes the given file.
-const processChunk = (folder, chunkFile) => {
+const processChunk = (mongodb, folder, chunkFile) => {
   const data = fs.readFileSync(`${folder}${chunkFile}`);
   const chunkJson = parseChunk(data);
-  const filename = `${jsonDir}/${chunkFile}.json`;
-  createNewFile(JSON.stringify(chunkJson), filename);
+
+  mongodb.collection('sirene').insert(chunkJson);
+  mongodb.collection('sirene').count(function (err, count) {
+    if (err) throw err;
+    console.log('Total Rows: ' + count);
+  });
 };
 
 // Returns a JSON object from the given data.

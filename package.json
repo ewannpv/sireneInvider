@@ -8,7 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "pm2:run": "pm2 start process.json",
     "pm2:stop": "pm2 stop all",
-    "clean:data": "rm -rf src/data/worker && rm -rf src/data/json && exit 0",
+    "mongo:start": "systemctl start mongodb.service && exit 1",
+    "mongo:stop": "systemctl stop mongodb.service && exit 1",
+    "clean:data": "rm -rf src/data/worker && rm -rf src/data/json && exit 1",
     "lint": "eslint"
   },
   "author": "",
