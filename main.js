@@ -18,13 +18,15 @@ perfObserver.observe({ entryTypes: ['measure'], buffer: true });
 const generateEditedSamples = async () => {
   checkDir(workerDir);
 
-  await new Promise((resolve) => setTimeout(resolve, 10000));
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   performance.mark('START_SPLITING');
   splitFile();
 };
 
 // Setups workers.
 const setupWorkers = () => {
+  performance.mark('START_WORKER');
+
   let mongodb;
   MongoClient.connect(
     mongoUrl,
@@ -41,6 +43,17 @@ const setupWorkers = () => {
   );
 
   process.on('message', (packet) => {
+    if (packet.data.signal) {
+      pm2.stop(process.env.pm_id);
+      console.log('stop process ' + process.env.pm_id);
+      performance.mark('END_WORKER');
+      performance.measure(
+        'START_WORKER',
+        'END_WORKER',
+        `END_WORKER_${process.env.pm_id}`
+      );
+      return;
+    }
     processChunk(mongodb, packet.data.filename);
   });
 };

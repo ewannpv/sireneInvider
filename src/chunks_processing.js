@@ -10,19 +10,16 @@ const processChunk = async (mongodb, chunkFile) => {
   const data = fs.readFileSync(chunkFile);
   const chunkJson = parseChunk(data);
 
-  //saveJson(chunkFile, chunkJson);
-  mongodb.collection('sirene').insert(chunkJson);
+  mongodb.collection('sirene').insertMany(chunkJson);
 };
 
 // Returns a JSON object from the given data.
 const parseChunk = (data) => {
-  var dateJson = {
-    data: [],
-  };
-  const lines = Buffer(data).toString().split('\n');
+  var dateJson = [];
+  const lines = Buffer.from(data).toString().split('\n');
   lines.shift();
   for (let index = 0; index < lines.length; index += 1) {
-    dateJson.data.push(csvFormat(lines[index].split(',')));
+    dateJson.push(csvFormat(lines[index].split(',')));
   }
   return dateJson;
 };
