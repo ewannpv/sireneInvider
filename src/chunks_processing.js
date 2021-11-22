@@ -2,8 +2,12 @@ import csvFormat from './models/csvFormat.js';
 import fs from 'fs';
 
 // Processes the given file.
-const processChunk = (mongodb, folder, chunkFile) => {
-  const data = fs.readFileSync(`${folder}${chunkFile}`);
+const processChunk = async (mongodb, chunkFile) => {
+  while (!fs.existsSync(chunkFile)) {
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+  }
+  fs.existsSync;
+  const data = fs.readFileSync(chunkFile);
   const chunkJson = parseChunk(data);
 
   //saveJson(chunkFile, chunkJson);
