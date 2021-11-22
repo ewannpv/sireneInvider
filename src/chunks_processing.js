@@ -1,17 +1,27 @@
 import csvFormat from './models/csvFormat.js';
+import fs from 'fs';
+import { jsonDir } from './constants/constants.js';
+import { createNewFile } from './utils.js';
 
+// Processes the given file.
+const processChunk = (folder, chunkFile) => {
+  const data = fs.readFileSync(`${folder}${chunkFile}`);
+  const chunkJson = parseChunk(data);
+  const filename = `${jsonDir}/${chunkFile}.json`;
+  createNewFile(JSON.stringify(chunkJson), filename);
+};
+
+// Returns a JSON object from the given data.
 const parseChunk = (data) => {
-  console.log('check parseChunk');
-  var obj = {
+  var dateJson = {
     data: [],
   };
   const lines = Buffer(data).toString().split('\n');
   lines.shift();
-  console.log('lines ' + lines.length);
   for (let index = 0; index < lines.length; index += 1) {
-    obj.data.push(csvFormat(lines[index].split(',')));
+    dateJson.data.push(csvFormat(lines[index].split(',')));
   }
-  console.log('file parsed');
+  return dateJson;
 };
 
-export default parseChunk;
+export default processChunk;

@@ -1,18 +1,3 @@
-export const csvInformationsNeeded = [
-  'siren',
-  'nic',
-  'siret',
-  'dateCreationEtablissement',
-  'dateDernierTraitementEtablissement',
-  'typeVoieEtablissement',
-  'libelleVoieEtablissement',
-  'codePostalEtablissement',
-  'libelleCommuneEtablissement',
-  'codeCommuneEtablissement',
-  'dateDebut',
-  'etatAdministratifEtablissement',
-];
-
 const csvFormat = (list) => ({
   siren: list[0],
   nic: list[1],

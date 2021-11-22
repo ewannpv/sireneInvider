@@ -1,12 +1,11 @@
 import fs from 'fs';
-import pm2 from 'pm2';
 import { workerDir, chunkSize, csvFilePath } from './constants/constants.js';
-import packet from './models/packet.js';
 import { createNewFile } from './utils.js';
 
 let currentWorker = 1;
 let currentFile = 0;
 
+// Splites the file into smaller files.
 const splitFile = () => {
   fs.open(csvFilePath, 'r', (err, fd) => {
     if (err) throw err;
@@ -20,7 +19,7 @@ const splitFile = () => {
           fs.close(fd, (err3) => {
             if (err3) throw err3;
           });
-          console.log('Split is done :)');
+          console.log('Split is done.');
           return;
         }
 
