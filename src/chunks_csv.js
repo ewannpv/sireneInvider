@@ -6,7 +6,7 @@ let currentWorker = 1;
 let currentFile = 0;
 
 // Splites the file into smaller files.
-const splitFile = () => {
+export const splitFile = () => {
   fs.open(csvFilePath, 'r', (err, fd) => {
     if (err) throw err;
     const buffer = Buffer.alloc(chunkSize);
@@ -43,4 +43,6 @@ const splitFile = () => {
   });
 };
 
-export default splitFile;
+export const sendLastdChuk = (folder) => {
+  createNewFile('', `${folder}/end`);
+};

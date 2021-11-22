@@ -6,11 +6,8 @@ const processChunk = (mongodb, folder, chunkFile) => {
   const data = fs.readFileSync(`${folder}${chunkFile}`);
   const chunkJson = parseChunk(data);
 
+  //saveJson(chunkFile, chunkJson);
   mongodb.collection('sirene').insert(chunkJson);
-  mongodb.collection('sirene').count(function (err, count) {
-    if (err) throw err;
-    console.log('Total Rows: ' + count);
-  });
 };
 
 // Returns a JSON object from the given data.
