@@ -65,8 +65,10 @@ const setupWorkers = () => {
 pm2.connect((err) => {
   if (err) throw err;
   if (process.env.pm_id === '0') {
+    // Main  worker.
     generateEditedSamples();
   } else {
+    // Other workers.
     setupWorkers();
   }
 });
