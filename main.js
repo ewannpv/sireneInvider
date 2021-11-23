@@ -2,6 +2,7 @@ import { mongoUrl, workerDir } from './src/constants/constants.js';
 import { checkDir } from './src/utils.js';
 import { splitFile } from './src/chunks_csv.js';
 import pm2 from 'pm2';
+import fs from 'fs';
 import processChunk from './src/chunks_processing.js';
 import { MongoClient } from 'mongodb';
 import { performance, PerformanceObserver } from 'perf_hooks';
@@ -17,16 +18,19 @@ perfObserver.observe({ entryTypes: ['measure'], buffer: true });
 // Generates file samples for the workers.
 const generateEditedSamples = async () => {
   checkDir(workerDir);
+  for (let index = 0; index < process.env.instances - 1; index++) {
+    checkDir(`${workerDir}${index}/`);
+  }
 
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  // Wait for the end of pm2 init.
+  // TODO: Wait until message instead.
+  await new Promise((resolve) => setTimeout(resolve, 10000));
   performance.mark('START_SPLITING');
   splitFile();
 };
 
 // Setups workers.
 const setupWorkers = () => {
-  performance.mark('START_WORKER');
-
   let mongodb;
   MongoClient.connect(
     mongoUrl,
@@ -35,26 +39,19 @@ const setupWorkers = () => {
       useUnifiedTopology: true,
     },
     (err, client) => {
-      if (err) throw err;
+      if (err) {
+        return console.log(err);
+      }
 
       mongodb = client.db('sirene_invider');
       console.log(`MongoDB Connected: ${mongoUrl}`);
     }
   );
 
-  process.on('message', (packet) => {
-    if (packet.data.signal) {
-      pm2.stop(process.env.pm_id);
-      console.log('stop process ' + process.env.pm_id);
-      performance.mark('END_WORKER');
-      performance.measure(
-        'START_WORKER',
-        'END_WORKER',
-        `END_WORKER_${process.env.pm_id}`
-      );
-      return;
-    }
-    processChunk(mongodb, packet.data.filename);
+  const index = process.env.pm_id - 1;
+  checkDir(`${workerDir}${index}/`);
+  fs.watch(`${workerDir}${index}/`, (_event, filename) => {
+    processChunk(mongodb, `${workerDir}${index}/`, filename);
   });
 };
 

@@ -1,9 +1,7 @@
 import fs from 'fs';
 import { workerDir, chunkSize, csvFilePath } from './constants/constants.js';
 import { createNewFile } from './utils.js';
-import pm2 from 'pm2';
 import { performance } from 'perf_hooks';
-import { packet, signal } from './models/packet.js';
 
 let currentWorker = 1;
 let currentFile = 0;
@@ -25,11 +23,6 @@ export const splitFile = () => {
           performance.mark('END_SPLITING');
           performance.measure('SPLIT_TIME', 'START_SPLITING', 'END_SPLITING');
           console.log('Split is done.');
-          for (let index = 1; index < process.env.instances - 1; index++) {
-            pm2.sendDataToProcessId(signal(index, 'stop'), (err6) => {
-              if (err6) throw err6;
-            });
-          }
           return;
         }
 
@@ -39,15 +32,9 @@ export const splitFile = () => {
 
         const slicedData = data.slice(0, data.lastIndexOf('\n'));
 
-        if (currentWorker >= process.env.instances - 1) currentWorker = 1;
-        const filename = `${workerDir}${currentFile}.csv`;
-        const file = Buffer.concat([tailBuffer, slicedData]);
-
-        createNewFile(file, filename);
-        pm2.sendDataToProcessId(packet(currentWorker, filename), (err6) => {
-          if (err6) throw err6;
-        });
-
+        if (currentWorker >= process.env.instances - 1) currentWorker = 0;
+        const filename = `${workerDir}${currentWorker}/${currentFile}.csv`;
+        createNewFile(Buffer.concat([tailBuffer, slicedData]), filename);
         currentFile++;
         currentWorker++;
 
@@ -57,8 +44,4 @@ export const splitFile = () => {
     };
     readNextChunk();
   });
-};
-
-export const sendLastdChuk = (folder) => {
-  createNewFile('', `${folder}/end`);
 };
