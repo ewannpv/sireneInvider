@@ -9,7 +9,7 @@ export const checkDir = (dirPath) => {
 
 export const createNewFile = (file, path) => {
   fs.writeFile(path, file, (err) => {
-    if (err) throw err;
+    if (err) console.log(err);
   });
 };
 

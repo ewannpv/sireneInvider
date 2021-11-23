@@ -1,16 +1,20 @@
 import csvToJsonFormat from './models/csvFormat.js';
 import fs from 'fs';
+import * as mongoUtil from './mongodb_utils.js';
 
 // Processes the given file.
-const processChunk = (mongodb, folder, chunkFile) => {
+const processChunk = (folder, chunkFile) => {
   const data = fs.readFileSync(`${folder}${chunkFile}`);
   const chunkJson = parseChunk(data);
 
   //saveJson(chunkFile, chunkJson);
+  const mongodb = mongoUtil.getDb();
   mongodb.collection('sirene').insertMany(chunkJson);
 
-  // Delete the  file when processing is done.
-  fs.unlink(`${folder}${chunkFile}`);
+  //Delete the  file when processing is done.
+  fs.unlink(`${folder}${chunkFile}`, (err) => {
+    if (err) console.log(err);
+  });
 };
 
 // Returns a JSON object from the given data.
