@@ -1,4 +1,4 @@
-import csvFormat from './models/csvFormat.js';
+import csvToJsonFormat from './models/csvFormat.js';
 import fs from 'fs';
 
 // Processes the given file.
@@ -7,8 +7,10 @@ const processChunk = (mongodb, folder, chunkFile) => {
   const chunkJson = parseChunk(data);
 
   //saveJson(chunkFile, chunkJson);
-  console.log(chunkJson.length);
   mongodb.collection('sirene').insertMany(chunkJson);
+
+  // Delete the  file when processing is done.
+  fs.unlink(`${folder}${chunkFile}`);
 };
 
 // Returns a JSON object from the given data.
@@ -17,7 +19,7 @@ const parseChunk = (data) => {
   const lines = Buffer.from(data).toString().split('\n');
   lines.shift();
   for (let index = 0; index < lines.length; index += 1) {
-    dateJson.push(csvFormat(lines[index].split(',')));
+    dateJson.push(csvToJsonFormat(lines[index].split(',')));
   }
   return dateJson;
 };

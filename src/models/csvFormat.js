@@ -1,4 +1,4 @@
-const csvFormat = (list) => ({
+const csvToJsonFormat = (list) => ({
   siren: list[0],
   nic: list[1],
   siret: list[2],
@@ -13,4 +13,4 @@ const csvFormat = (list) => ({
   etatAdministratifEtablissement: list[40],
 });
 
-export default csvFormat;
+export default csvToJsonFormat;

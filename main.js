@@ -50,8 +50,15 @@ const setupWorkers = () => {
 
   const index = process.env.pm_id - 1;
   checkDir(`${workerDir}${index}/`);
-  fs.watch(`${workerDir}${index}/`, (_event, filename) => {
-    processChunk(mongodb, `${workerDir}${index}/`, filename);
+  fs.watch(`${workerDir}${index}/`, (event, filename) => {
+    if (fs.existsSync(`${workerDir}${index}/${filename}`)) {
+      processChunk(mongodb, `${workerDir}${index}/`, filename);
+    }
+    // If dir is empty,stop the worker.
+    else if (fs.readdirSync(workerDir).length === 0) {
+      console.log(`Killing worker ${process.env.pm_id}`);
+      pm2.stop(process.env.pm_id);
+    }
   });
 };
 
