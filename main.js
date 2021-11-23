@@ -1,7 +1,7 @@
 import { PerformanceObserver } from 'perf_hooks';
 import pm2 from 'pm2';
-import generateEditedSamples from './src/splitter';
-import setupWorkers from './src/worker';
+import generateEditedSamples from './src/splitter.js';
+import setupWorkers from './src/worker.js';
 
 const perfObserver = new PerformanceObserver((items) => {
   items.getEntries().forEach((entry) => {

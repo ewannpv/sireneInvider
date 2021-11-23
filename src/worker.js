@@ -1,14 +1,14 @@
-import * as mongoUtil from './src/mongodb_utils.js';
-import { checkDir } from './src/utils.js';
-import { workerDir } from './src/constants/constants.js';
-import processChunk from './src/chunks_processing.js';
+import * as mongoUtil from './mongodb_utils.js';
+import { checkDir } from './utils.js';
+import { workerDir } from './constants/constants.js';
+import processChunk from './chunks_processing.js';
 import pm2 from 'pm2';
 import fs from 'fs';
 
 // Setups workers.
-const setupWorkers = () => {
-  mongoUtil.connectToServer(function (err) {
-    if (err) console.log(err);
+const setupWorkers = async () => {
+  await mongoUtil.connectToServer(function (err) {
+    if (err) console.log('11' + err);
   });
   const index = process.env.pm_id - 1;
   checkDir(`${workerDir}${index}/`);

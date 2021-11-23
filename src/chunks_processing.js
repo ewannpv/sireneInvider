@@ -6,10 +6,10 @@ import * as mongoUtil from './mongodb_utils.js';
 const processChunk = (folder, chunkFile) => {
   const data = fs.readFileSync(`${folder}${chunkFile}`);
   const chunkJson = parseChunk(data);
-
+  console.log('data len' + data.length);
   //saveJson(chunkFile, chunkJson);
   const mongodb = mongoUtil.getDb();
-  mongodb.collection('sirene').insertMany(chunkJson);
+  //mongodb.collection('sirene').insertMany(chunkJson);
 
   //Delete the  file when processing is done.
   fs.unlink(`${folder}${chunkFile}`, (err) => {
