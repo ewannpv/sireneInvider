@@ -1,7 +1,8 @@
-import { workerDir } from './constants/constants.js';
+import { tmpDir, workerDir } from './constants/constants.js';
 import processChunk from './chunks_processing.js';
 import fs from 'fs';
 import pm2 from 'pm2';
+import { checkDir } from './utils.js';
 
 // import { performance } from 'perf_hooks';
 
@@ -10,13 +11,18 @@ let iteration = 1;
 // Setups workers.
 const setupWorkers = () => {
   //performance.mark('START_WORKER');
+
   processFolder();
 };
 
 const processFolder = async () => {
   console.log('Waiting files');
-  await new Promise((resolve) => setTimeout(resolve, 500));
   const index = process.env.pm_id - 1;
+
+  checkDir(tmpDir);
+  checkDir(workerDir);
+  checkDir(`${workerDir}${index}/`);
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   fs.readdir(`${workerDir}${index}/`, (err, files) => {
     //handling error
     if (err) {
@@ -36,12 +42,12 @@ const processFolder = async () => {
     }
     console.log(`iteration ${iteration++}, files ${files.length}`);
     //listing all files using forEach
-    files.forEach(function (file) {
+    files.forEach((file) => {
       // Do whatever you want to do with the file
       processChunk(`${workerDir}${index}/`, file);
     });
+    processFolder();
   });
-  processFolder();
 };
 
 export default setupWorkers;

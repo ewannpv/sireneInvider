@@ -1,12 +1,13 @@
 import { splitFile } from './chunks_csv.js';
 import { checkDir } from './utils.js';
-import { workerDir } from './constants/constants.js';
+import { tmpDir, workerDir } from './constants/constants.js';
 import { performance } from 'perf_hooks';
 import fs from 'fs';
 import pm2 from 'pm2';
 
 // Generates file samples for the workers.
 const generateEditedSamples = async () => {
+  checkDir(tmpDir);
   checkDir(workerDir);
   for (let index = 0; index < process.env.instances - 1; index++) {
     checkDir(`${workerDir}${index}/`);
@@ -15,7 +16,7 @@ const generateEditedSamples = async () => {
   performance.mark('START_SPLITING');
   splitFile();
 
-  waitForWorkers();
+  // waitForWorkers();
 };
 
 const waitForWorkers = async () => {
@@ -29,8 +30,7 @@ const waitForWorkers = async () => {
     });
   }
   performance.mark('JOB_DONE');
-  performance.measure('START_SPLITING', 'START_SPLITING', 'JOB_DONE');
-  console.log('done');
-  pm2.stop(process.env.pm_id);
+  performance.measure('DONE :)', 'START_SPLITING', 'JOB_DONE');
+  //pm2.stop(process.env.pm_id);
 };
 export default generateEditedSamples;

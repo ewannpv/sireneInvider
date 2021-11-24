@@ -4,24 +4,23 @@ import { mongoUrl } from './constants/constants.js';
 import { MongoClient } from 'mongodb';
 
 // Processes the given file.
-const processChunk = async (folder, chunkFile) => {
+const processChunk = (folder, chunkFile) => {
   if (!fs.existsSync(`${folder}${chunkFile}`)) {
     return;
   }
 
-  const client = await MongoClient.connect(mongoUrl, { useNewUrlParser: true });
-  const db = client.db('sirene_invider');
+  MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
+    const db = client.db('sirene_invider');
 
-  if (!fs.existsSync(`${folder}${chunkFile}`)) return;
+    if (!fs.existsSync(`${folder}${chunkFile}`)) return;
 
-  const data = fs.readFileSync(`${folder}${chunkFile}`);
-  db.collection('sirene').insertMany(parseChunk(data), {}, (err) => {
-    if (err) console.log(err);
-  });
-
-  //Delete the  file when processing is done.
-  fs.unlink(`${folder}${chunkFile}`, (err) => {
-    if (err) console.log(`Delete: ${err}`);
+    let data = fs.readFileSync(`${folder}${chunkFile}`);
+    data = parseChunk(data);
+    //Delete the  file when processing is done.
+    fs.unlink(`${folder}${chunkFile}`, (err) => {
+      if (err) console.log(`Delete: ${err}`);
+    });
+    db.collection('sirene').insertMany(data);
   });
 };
 
