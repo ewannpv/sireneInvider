@@ -15,7 +15,7 @@ const setupWorkers = () => {
 
 const processFolder = async () => {
   console.log('Waiting files');
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  await new Promise((resolve) => setTimeout(resolve, 500));
   const index = process.env.pm_id - 1;
   fs.readdir(`${workerDir}${index}/`, (err, files) => {
     //handling error
