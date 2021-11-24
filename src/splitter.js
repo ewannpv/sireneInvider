@@ -14,17 +14,23 @@ const generateEditedSamples = async () => {
   console.log('starting');
   performance.mark('START_SPLITING');
   splitFile();
+
   waitForWorkers();
 };
 
-const waitForWorkers = () => {
+const waitForWorkers = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 5000));
   for (let index = 0; index < process.env.instances - 1; index++) {
     fs.readdir(`${workerDir}${index}/`, (err, files) => {
       //handling error
-      if (files.length) return;
+      if (files.length > 0) {
+        return waitForWorkers();
+      }
     });
   }
   performance.mark('JOB_DONE');
+  performance.measure('START_SPLITING', 'START_SPLITING', 'JOB_DONE');
+  console.log('done');
   pm2.stop(process.env.pm_id);
 };
 export default generateEditedSamples;

@@ -7,6 +7,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 0",
     "mongo:start": "sudo systemctl start mongodb.service && exit 0",
+    "mongomac:start": "brew services start mongodb-community@5.0",
     "mongo:stop": "sudo systemctl stop mongodb.service && exit 0",
     "clean:data": "rm -rf src/data/worker && rm -rf src/data/json && exit 0",
     "pm2:start": "npm run clean:data && pm2 start process.json",
