@@ -9,7 +9,6 @@ const generateEditedSamples = async () => {
   for (let index = 0; index < process.env.instances - 1; index++) {
     checkDir(`${workerDir}${index}/`);
   }
-
   console.log('starting');
   performance.mark('START_SPLITING');
   splitFile();

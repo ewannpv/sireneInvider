@@ -9,16 +9,16 @@ let currentFile = 0;
 // Splites the file into smaller files.
 export const splitFile = () => {
   fs.open(csvFilePath, 'r', (err, fd) => {
-    if (err) console.log(err);
+    if (err) console.log(`split file 12: ${err}`);
     const buffer = Buffer.alloc(chunkSize);
     let tailBuffer = Buffer.alloc(0);
     const readNextChunk = () => {
       fs.read(fd, buffer, 0, chunkSize, null, (err2, nread) => {
-        if (err2) console.log(err2);
+        if (err2) console.log(`split file 17: ${err2}`);
 
         if (nread === 0) {
           fs.close(fd, (err3) => {
-            if (err3) console.log(err3);
+            if (err3) console.log(`split file 21: ${err3}`);
           });
           performance.mark('END_SPLITING');
           performance.measure('SPLIT_TIME', 'START_SPLITING', 'END_SPLITING');

@@ -5,14 +5,14 @@ import setupWorkers from './src/worker.js';
 
 const perfObserver = new PerformanceObserver((items) => {
   items.getEntries().forEach((entry) => {
-    console.log(entry);
+    console.log(`perf: ${entry.name}, duration: ${entry.duration}`);
   });
 });
 
 perfObserver.observe({ entryTypes: ['measure'], buffer: true });
 
 pm2.connect((err) => {
-  console.log(err);
+  if (err) console.log(`pm2 connect: ${err}`);
   if (process.env.pm_id === '0') {
     // Main  worker.
     generateEditedSamples();
