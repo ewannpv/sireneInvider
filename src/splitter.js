@@ -15,7 +15,6 @@ const generateEditedSamples = async () => {
   console.log('starting');
   performance.mark('START_SPLITING');
   splitFile();
-
   // waitForWorkers();
 };
 

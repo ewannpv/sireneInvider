@@ -1,7 +1,6 @@
 import csvToJsonFormat from './models/csvFormat.js';
 import fs from 'fs';
-import { mongoUrl } from './constants/constants.js';
-import { MongoClient } from 'mongodb';
+import dataModel from './models/dataModel.js';
 
 // Processes the given file.
 const processChunk = (folder, chunkFile) => {
@@ -9,19 +8,23 @@ const processChunk = (folder, chunkFile) => {
     return;
   }
 
-  MongoClient.connect(mongoUrl, { useNewUrlParser: true }, (err, client) => {
-    const db = client.db('sirene_invider');
+  if (!fs.existsSync(`${folder}${chunkFile}`)) return;
 
-    if (!fs.existsSync(`${folder}${chunkFile}`)) return;
-
-    let data = fs.readFileSync(`${folder}${chunkFile}`);
-    data = parseChunk(data);
-    //Delete the  file when processing is done.
-    fs.unlink(`${folder}${chunkFile}`, (err) => {
-      if (err) console.log(`Delete: ${err}`);
-    });
-    db.collection('sirene').insertMany(data);
+  const data = fs.readFileSync(`${folder}${chunkFile}`);
+  const dataParsed = parseChunk(data);
+  //Delete the  file when processing is done.
+  fs.unlink(`${folder}${chunkFile}`, (err) => {
+    if (err) console.log(`Delete: ${err}`);
   });
+
+  dataModel
+    .insertMany(dataParsed)
+    .then(function () {
+      console.log('Data inserted');
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
 };
 
 // Returns a JSON object from the given data.
