@@ -15,7 +15,7 @@ const processChunk = async (filename) => {
 
 // Sends data to db.
 const sendData = async (data) => {
-  await dataModel.collection.insertMany(data, { ordered: false });
+  dataModel.insertMany(data, { ordered: false });
 };
 
 // Returns a JSON object from the given data.
@@ -25,8 +25,16 @@ const parseChunk = async (data) => {
   lines.shift();
   let count = 0;
   for (let index = 0; index < lines.length; index += 1) {
+<<<<<<< HEAD
     if (count > 1000) {
       await sendData(dataJSON);
+=======
+    dataJSON.push(csvToJsonFormat(lines[index].split(',')));
+    count++;
+
+    if (count == 100) {
+      sendData(dataJSON);
+>>>>>>> parent of 31dc2e3 (updates const)
       dataJSON = [];
       count = 0;
     }
