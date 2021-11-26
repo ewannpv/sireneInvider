@@ -15,7 +15,7 @@ const processChunk = async (filename) => {
 
 // Sends data to db.
 const sendData = async (data) => {
-  dataModel.insertMany(data, { ordered: false });
+  await dataModel.insertMany(data, { ordered: false });
 };
 
 // Returns a JSON object from the given data.
@@ -29,7 +29,7 @@ const parseChunk = async (data) => {
     count++;
 
     if (count == 100) {
-      sendData(dataJSON);
+      await sendData(dataJSON);
       dataJSON = [];
       count = 0;
     }
