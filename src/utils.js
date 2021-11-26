@@ -6,8 +6,6 @@ export const checkDir = (dirPath) => {
   }
 };
 
-export const createNewFile = (file, path) => {
-  fs.writeFile(path, file, (err) => {
-    if (err) console.log(`create new file: ${err}`);
-  });
+export const createNewFile = async (file, path) => {
+  return fs.writeFileSync(path, file);
 };

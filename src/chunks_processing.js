@@ -3,40 +3,38 @@ import fs from 'fs';
 import dataModel from './models/dataModel.js';
 
 // Processes the given file.
-const processChunk = (folder, chunkFile) => {
-  if (!fs.existsSync(`${folder}${chunkFile}`)) {
-    return;
-  }
+const processChunk = async (filename) => {
+  const data = fs.readFileSync(filename);
+  parseChunk(data);
 
-  if (!fs.existsSync(`${folder}${chunkFile}`)) return;
-
-  const data = fs.readFileSync(`${folder}${chunkFile}`);
-  const dataParsed = parseChunk(data);
-  //Delete the  file when processing is done.
-  fs.unlink(`${folder}${chunkFile}`, (err) => {
-    if (err) console.log(`Delete: ${err}`);
+  //Delete the  file reading is done.
+  fs.unlink(filename, (err) => {
+    if (err) console.log(`Error while deleting: ${err}`);
   });
+};
 
-  dataModel
-    .insertMany(dataParsed)
-    .then(function () {
-      console.log('Data inserted');
-    })
-    .catch(function (error) {
-      console.log(error);
-    });
+// Sends data to db.
+const sendData = async (data) => {
+  dataModel.insertMany(data, { ordered: false });
 };
 
 // Returns a JSON object from the given data.
-const parseChunk = (data) => {
+const parseChunk = async (data) => {
   let dataJSON = [];
   const lines = Buffer.from(data).toString().split('\n');
   lines.shift();
   let count = 0;
-  for (let index = 0; index < lines.length; index += 1, count += 1) {
+  for (let index = 0; index < lines.length; index += 1) {
     dataJSON.push(csvToJsonFormat(lines[index].split(',')));
+    count++;
+
+    if (count == 100) {
+      sendData(dataJSON);
+      dataJSON = [];
+      count = 0;
+    }
   }
-  return dataJSON;
+  if (dataJSON.length) sendData(dataJSON);
 };
 
 export default processChunk;

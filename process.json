@@ -3,9 +3,9 @@
     {
       "name": "app1",
       "script": "./main.js",
-      "instances": "3",
+      "instances": "4",
       "exec_mode": "cluster",
-      "max_memory_restart": "180"
+      "autorestart": false
     }
   ]
 }
