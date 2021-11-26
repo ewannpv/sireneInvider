@@ -32,7 +32,7 @@ const waitForWorkers = async () => {
     console.log('number of documents:' + number1);
 
     // wait 10 seconds.
-    await new Promise((resolve) => setTimeout(resolve, 10000));
+    await new Promise((resolve) => setTimeout(resolve, 20000));
 
     number2 = await dataModel.countDocuments();
     console.log('number of documents:' + number2);

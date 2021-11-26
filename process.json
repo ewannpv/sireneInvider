@@ -3,7 +3,7 @@
     {
       "name": "app1",
       "script": "./main.js",
-      "instances": "4",
+      "instances": "max",
       "exec_mode": "cluster",
       "autorestart": false
     }

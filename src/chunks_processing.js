@@ -15,7 +15,7 @@ const processChunk = async (filename) => {
 
 // Sends data to db.
 const sendData = async (data) => {
-  await dataModel.insertMany(data, { ordered: false });
+  await dataModel.collection.insertMany(data, { ordered: false });
 };
 
 // Returns a JSON object from the given data.
@@ -25,14 +25,13 @@ const parseChunk = async (data) => {
   lines.shift();
   let count = 0;
   for (let index = 0; index < lines.length; index += 1) {
-    dataJSON.push(csvToJsonFormat(lines[index].split(',')));
-    count++;
-
-    if (count == 100) {
+    if (count > 1000) {
       await sendData(dataJSON);
       dataJSON = [];
       count = 0;
     }
+    dataJSON.push(csvToJsonFormat(lines[index].split(',')));
+    count++;
   }
   if (dataJSON.length) sendData(dataJSON);
 };
