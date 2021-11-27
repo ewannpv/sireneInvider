@@ -2,10 +2,14 @@ import processChunk from './chunks_processing.js';
 import mongoose from 'mongoose';
 import { mongoUrl } from './constants/constants.js';
 
+// List of files to process.
 let files = [];
+
+// Boolean to know if processFiles started.
 let started = false;
 
-export const nextFile = async () => {
+// Process files from the queue.
+export const processFiles = async () => {
   while (files.length > 0) {
     const nextFile = files.pop();
     await processChunk(nextFile);
@@ -22,7 +26,7 @@ const setupWorkers = async () => {
     files.push(filename);
     if (!started) {
       started = true;
-      nextFile();
+      processFiles();
     }
   });
 };
