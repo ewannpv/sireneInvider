@@ -11,7 +11,7 @@
     "mongo:stop": "sudo systemctl stop mongodb.service && exit 0",
     "clean:data": "rm -rf src/data/tmp && exit 0",
     "pm2:start": "pm2 start process.json",
-    "pm2:stop": "pm2 stop all && npm run clean:data",
+    "pm2:stop": "pm2 delete all && npm run clean:data",
     "lint": "eslint"
   },
   "author": "",

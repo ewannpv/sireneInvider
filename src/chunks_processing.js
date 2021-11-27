@@ -11,7 +11,6 @@ const processChunk = async (filename) => {
   await parseChunk(data);
 
   //Delete the  file reading is done.
-  console.log('Deleting file:  ' + filename);
   fs.unlink(filename, (err) => {
     if (err) console.log(`Error while deleting: ${err}`);
   });
@@ -28,7 +27,7 @@ const sendData = async (data) => {
     //  Lost connetion.
     console.log('Lost connection, reconnecting.');
     await mongoose.connect(mongoUrl, {});
-    sendData(data);
+    await sendData(data);
   }
 };
 
@@ -47,7 +46,7 @@ const parseChunk = async (data) => {
     dataJSON.push(csvToJsonFormat(lines[index].split(',')));
     count++;
   }
-  if (dataJSON.length) sendData(dataJSON);
+  if (dataJSON.length) await sendData(dataJSON);
 };
 
 export default processChunk;
