@@ -8,8 +8,10 @@ import dataModel from './models/dataModel.js';
 
 const setupMainWorker = async () => {
   // Cleans the db.
-  mongoose.connect(mongoUrl, {});
+  console.log('Cleaning database..');
+  await mongoose.connect(mongoUrl, {});
   await dataModel.deleteMany({});
+  console.log('Done.');
 
   // Check if tmpDir exists.
   checkDir(tmpDir);
@@ -28,11 +30,13 @@ const setupMainWorker = async () => {
 const waitForWorkers = async () => {
   let number1, number2;
   do {
+    await new Promise((resolve) => setTimeout(resolve, 10000));
+
     number1 = await dataModel.countDocuments();
     console.log('number of documents:' + number1);
 
     // wait 10 seconds.
-    await new Promise((resolve) => setTimeout(resolve, 20000));
+    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     number2 = await dataModel.countDocuments();
     console.log('number of documents:' + number2);

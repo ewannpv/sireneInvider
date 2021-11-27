@@ -4,7 +4,7 @@ import { mongoUrl } from './constants/constants.js';
 
 // Setups workers.
 const setupWorkers = async () => {
-  mongoose.connect(mongoUrl, {});
+  await mongoose.connect(mongoUrl, {});
 
   process.on('message', (message) => {
     const filename = message.data;

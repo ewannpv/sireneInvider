@@ -1,13 +1,17 @@
 import csvToJsonFormat from './models/csvFormat.js';
 import fs from 'fs';
 import dataModel from './models/dataModel.js';
+import mongoose from 'mongoose';
+import { mongoUrl } from './constants/constants.js';
 
 // Processes the given file.
 const processChunk = async (filename) => {
+  console.log('Proccessing file:  ' + filename);
   const data = fs.readFileSync(filename);
-  parseChunk(data);
+  await parseChunk(data);
 
   //Delete the  file reading is done.
+  console.log('Deleting file:  ' + filename);
   fs.unlink(filename, (err) => {
     if (err) console.log(`Error while deleting: ${err}`);
   });
@@ -15,7 +19,17 @@ const processChunk = async (filename) => {
 
 // Sends data to db.
 const sendData = async (data) => {
-  dataModel.insertMany(data, { ordered: false });
+  try {
+    await dataModel.insertMany(data, {
+      ordered: false,
+      bypassDocumentValidation: true,
+    });
+  } catch {
+    //  Lost connetion.
+    console.log('Lost connection, reconnecting.');
+    await mongoose.connect(mongoUrl, {});
+    sendData(data);
+  }
 };
 
 // Returns a JSON object from the given data.
@@ -25,16 +39,8 @@ const parseChunk = async (data) => {
   lines.shift();
   let count = 0;
   for (let index = 0; index < lines.length; index += 1) {
-<<<<<<< HEAD
-    if (count > 1000) {
+    if (count > 2000) {
       await sendData(dataJSON);
-=======
-    dataJSON.push(csvToJsonFormat(lines[index].split(',')));
-    count++;
-
-    if (count == 100) {
-      sendData(dataJSON);
->>>>>>> parent of 31dc2e3 (updates const)
       dataJSON = [];
       count = 0;
     }
