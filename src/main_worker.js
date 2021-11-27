@@ -6,6 +6,7 @@ import { mongoUrl } from './constants/constants.js';
 import mongoose from 'mongoose';
 import dataModel from './models/dataModel.js';
 import { performance } from 'perf_hooks';
+import fs from 'fs';
 
 let startTime;
 
@@ -33,17 +34,18 @@ const setupMainWorker = async () => {
 
 // Wait workers to finish operations.
 const waitForWorkers = async () => {
-  let number1, number2;
+  let number, files;
   do {
-    number1 = await dataModel.countDocuments();
-    const time = Math.round((Date.now() - startTime) / 1000);
-    console.log(`[${time} sec] number of documents added: ${number1}`);
-
-    // wait 10 seconds.
+    // wait 5 seconds.
     await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    number2 = await dataModel.countDocuments();
-  } while (number1 != number2);
+    number = await dataModel.countDocuments();
+    const time = Math.round((Date.now() - startTime) / 1000);
+    console.log(`[${time} sec] number of documents added: ${number}`);
+
+    // Check if all chunks have been processed.
+    files = fs.readdirSync(tmpDir).length;
+  } while (files > 0);
 };
 
 export default setupMainWorker;
