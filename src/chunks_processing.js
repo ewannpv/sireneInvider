@@ -19,7 +19,7 @@ const processChunk = async (filename) => {
 // Sends data to db.
 const sendData = async (data) => {
   try {
-    await dataModel.insertMany(data, {
+    await dataModel.collection.insertMany(data, {
       ordered: false,
       bypassDocumentValidation: true,
     });

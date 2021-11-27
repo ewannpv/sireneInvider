@@ -1,6 +1,7 @@
 import processChunk from './chunks_processing.js';
 import mongoose from 'mongoose';
 import { mongoUrl } from './constants/constants.js';
+import pm2 from 'pm2';
 
 // List of files to process.
 let files = [];
@@ -15,6 +16,7 @@ export const processFiles = async () => {
     await processChunk(nextFile);
   }
   console.log('Done.');
+  pm2.stop(process.env.pm_id);
 };
 
 // Setups workers.
