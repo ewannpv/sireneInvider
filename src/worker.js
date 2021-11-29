@@ -2,6 +2,7 @@ import processChunk from './chunks_processing.js';
 import mongoose from 'mongoose';
 import { mongoUrl } from './constants/constants.js';
 import pm2 from 'pm2';
+import { performance } from 'perf_hooks';
 
 // List of files to process.
 let files = [];
@@ -15,12 +16,19 @@ export const processFiles = async () => {
     const nextFile = files.pop();
     await processChunk(nextFile);
   }
+  performance.mark('END_WORKER');
+  performance.measure(
+    `WORKER_${process.env.pm_id}`,
+    'START_WORKER',
+    'END_WORKER'
+  );
   console.log('Done.');
   pm2.stop(process.env.pm_id);
 };
 
 // Setups workers.
 const setupWorkers = async () => {
+  performance.mark('START_WORKER');
   await mongoose.connect(mongoUrl, {});
 
   process.on('message', (message) => {
