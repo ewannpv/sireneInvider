@@ -24,7 +24,7 @@ const sendData = async (data) => {
       bypassDocumentValidation: true,
     });
   } catch {
-    //  Lost connetion.
+    //  Lost connection.
     console.log('Lost connection, reconnecting.');
     await mongoose.connect(mongoUrl, {});
     await sendData(data);
